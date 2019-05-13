@@ -1,5 +1,5 @@
-import React from "react";
-import withRoot from "../withRoot";
+import React from 'react';
+import withRoot from '../with-root';
 
 const App = () => {
   return <div>App</div>;
