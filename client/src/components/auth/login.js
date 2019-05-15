@@ -17,10 +17,10 @@ const graphqlQuery = `
 
 const Login = ({ classes }) => {
   const handleSuccess = async googleUser => {
-    const idToken = googleUser.getAuthResponse().id_token;
-    const graphqlClient = new GraphQLClient(graphqlEndpoint, {
-      headers: { authorization: idToken },
-    });
+    const options = {
+      headers: { authorization: googleUser.getAuthResponse().id_token },
+    };
+    const graphqlClient = new GraphQLClient(graphqlEndpoint, options);
     const data = await graphqlClient.request(graphqlQuery);
     console.log('SUCCESS! data from graphql request:', data);
   };

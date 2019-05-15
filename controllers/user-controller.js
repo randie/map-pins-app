@@ -1,11 +1,10 @@
-import User from '../models/user';
+import dotenv from 'dotenv';
 import { OAuth2Client } from 'google-auth-library';
 import { graphQLResultHasError } from 'apollo-utilities';
+import User from '../models/user';
 
-const OAUTH_CLIENT_ID = '743566532889-sig9nstap9c5hil42h88cocv649i2ckt.apps.googleusercontent.com';
-
-//const client = new OAuth2Client(process.env.OAUTH_CLIENT_ID);
-const client = new OAuth2Client(OAUTH_CLIENT_ID);
+dotenv.config();
+const client = new OAuth2Client(process.env.OAUTH_CLIENT_ID);
 
 export const findOrCreateUser = async authToken => {
   const googleUser = await verifyAuthToken(authToken);
