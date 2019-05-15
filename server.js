@@ -17,25 +17,14 @@ const server = new ApolloServer({
   resolvers,
   context: async ({ req }) => {
     const authToken = req.headers.authorization;
-    console.log('>> ApolloServer context, authToken:', authToken);
-    /*
     try {
-      if (authtoken) {
+      if (Boolean(authToken)) {
         const currentUser = await findOrCreateUser(authToken);
         return { currentUser };
       }
     } catch (error) {
       console.error(`ERROR! Unable to authenticate user with token ${authToken}`);
     }
-    */
-    return {
-      currentUser: {
-        _id: '2',
-        name: 'Yoda',
-        email: 'yoda@zombo.com',
-        picture: 'https//cloudinary.com/yoda.jpg',
-      },
-    };
   },
 });
 

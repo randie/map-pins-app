@@ -17,7 +17,6 @@ const graphqlQuery = `
 
 const Login = ({ classes }) => {
   const handleSuccess = async googleUser => {
-    debugger;
     const idToken = googleUser.getAuthResponse().id_token;
     const graphqlClient = new GraphQLClient(graphqlEndpoint, {
       headers: { authorization: idToken },
