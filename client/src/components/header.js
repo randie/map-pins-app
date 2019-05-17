@@ -5,6 +5,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import MapIcon from '@material-ui/icons/Map';
 import Typography from '@material-ui/core/Typography';
 import Context from '../context';
+import Logout from '../components/auth/logout';
 
 const Header = ({ classes }) => {
   // const {
@@ -31,7 +32,7 @@ const Header = ({ classes }) => {
               </Typography>
             </div>
           )}
-          {/* log out button */}
+          <Logout />
         </Toolbar>
       </AppBar>
     </div>

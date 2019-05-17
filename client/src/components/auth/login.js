@@ -19,7 +19,7 @@ const Login = ({ classes }) => {
       };
       const graphqlClient = new GraphQLClient(graphqlEndpoint, options);
       const { me } = await graphqlClient.request(meQuery);
-      dispatch({ type: 'LOGIN_USER', payload: me });
+      dispatch({ type: 'LOGIN', payload: me });
       dispatch({ type: 'SET_IS_LOGGED_IN', payload: googleUser.isSignedIn() });
     } catch (error) {
       handleFailure(error);
