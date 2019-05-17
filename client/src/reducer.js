@@ -5,6 +5,11 @@ export default (state, { type, payload }) => {
         ...state,
         currentUser: payload,
       };
+    case 'SET_IS_LOGGED_IN':
+      return {
+        ...state,
+        isLoggedIn: payload,
+      };
     default:
       return state;
   }
