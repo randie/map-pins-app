@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactMapGL, { NavigationControl } from 'react-map-gl';
 import { withStyles } from '@material-ui/core/styles';
 // import Button from "@material-ui/core/Button";
@@ -9,13 +9,27 @@ const accessToken =
   'pk.eyJ1IjoicmFuZGllIiwiYSI6ImNqdnJ1M29nbDJ5NGw0YW11YTg5cmkyZ24ifQ.T-CIaru7GAEfY6iSTwdRGg';
 
 const initialViewport = {
-  latitude: 45.512794,
-  longitude: -122.679565,
+  latitude: 40.014984,
+  longitude: -105.270546,
   zoom: 13,
 };
 
 const Map = ({ classes }) => {
   const [viewport, setViewport] = useState(initialViewport);
+  const [currentPosition, setCurrentPosition] = useState(null); // user's current position
+
+  useEffect(() => getCurrentPosition(), []);
+
+  const getCurrentPosition = () => {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(position => {
+        const { latitude, longitude } = position.coords;
+        setViewport({ ...viewport, latitude, longitude });
+        setCurrentPosition({ latitude, longitude });
+      });
+    }
+  };
+
   return (
     <div className={classes.root}>
       <ReactMapGL
@@ -29,6 +43,7 @@ const Map = ({ classes }) => {
         <div className={classes.navigationControl}>
           <NavigationControl onViewportChange={newViewport => setViewport(newViewport)} />
         </div>
+        <h2 style={{ float: 'right' }}>{JSON.stringify(currentPosition)}</h2>
       </ReactMapGL>
     </div>
   );
