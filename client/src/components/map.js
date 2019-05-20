@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import ReactMapGL, { NavigationControl, Marker } from 'react-map-gl';
 import { withStyles } from '@material-ui/core/styles';
 // import Button from "@material-ui/core/Button";
 // import Typography from "@material-ui/core/Typography";
 // import DeleteIcon from "@material-ui/icons/DeleteTwoTone";
+import Context from '../context';
 import PinIcon from './pin-icon';
 
 const accessToken =
@@ -16,6 +17,7 @@ const initialViewport = {
 };
 
 const Map = ({ classes }) => {
+  const { state, dispatch } = useContext(Context);
   const [viewport, setViewport] = useState(initialViewport);
   const [currentPosition, setCurrentPosition] = useState(null); // user's current position
 
@@ -31,6 +33,15 @@ const Map = ({ classes }) => {
     }
   };
 
+  const handleClick = ({ lngLat, leftButton }) => {
+    if (!leftButton) return;
+    if (!state.draftPin) {
+      dispatch({ type: 'CREATE_DRAFT_PIN' });
+    }
+    const [longitude, latitude] = lngLat;
+    dispatch({ type: 'UPDATE_DRAFT_PIN', payload: { longitude, latitude } });
+  };
+
   return (
     <div className={classes.root}>
       <ReactMapGL
@@ -40,6 +51,7 @@ const Map = ({ classes }) => {
         mapStyle="mapbox://styles/mapbox/streets-v9"
         mapboxApiAccessToken={accessToken}
         onViewportChange={newViewport => setViewport(newViewport)}
+        onClick={handleClick}
       >
         <div className={classes.navigationControl}>
           <NavigationControl onViewportChange={newViewport => setViewport(newViewport)} />
@@ -52,6 +64,16 @@ const Map = ({ classes }) => {
             offsetTop={-37}
           >
             <PinIcon size={40} color="red" />
+          </Marker>
+        )}
+        {state.draftPin && (
+          <Marker
+            latitude={state.draftPin.latitude}
+            longitude={state.draftPin.longitude}
+            offsetLeft={-19}
+            offsetTop={-37}
+          >
+            <PinIcon size={40} color="hotpink" />
           </Marker>
         )}
       </ReactMapGL>

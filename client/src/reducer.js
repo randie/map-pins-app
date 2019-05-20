@@ -16,6 +16,19 @@ export default (state, { type, payload }) => {
         ...state,
         isLoggedIn: payload,
       };
+    case 'CREATE_DRAFT_PIN':
+      return {
+        ...state,
+        draftPin: {
+          latitude: 0,
+          longitude: 0,
+        },
+      };
+    case 'UPDATE_DRAFT_PIN':
+      return {
+        ...state,
+        draftPin: payload,
+      };
     default:
       return state;
   }
