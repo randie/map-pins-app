@@ -6,6 +6,7 @@ import { withStyles } from '@material-ui/core/styles';
 // import DeleteIcon from "@material-ui/icons/DeleteTwoTone";
 import Context from '../context';
 import PinIcon from './pin-icon';
+import Blog from './blog';
 
 const accessToken =
   'pk.eyJ1IjoicmFuZGllIiwiYSI6ImNqdnJ1M29nbDJ5NGw0YW11YTg5cmkyZ24ifQ.T-CIaru7GAEfY6iSTwdRGg';
@@ -77,6 +78,7 @@ const Map = ({ classes }) => {
           </Marker>
         )}
       </ReactMapGL>
+      <Blog />
     </div>
   );
 };
