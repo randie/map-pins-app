@@ -20,6 +20,7 @@ const CreatePin = ({ classes }) => {
   const [title, setTitle] = useState('');
   const [image, setImage] = useState('');
   const [content, setContent] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
 
   const uploadImage = async () => {
     // upload image to cloudinary.com and return an image url
@@ -33,19 +34,26 @@ const CreatePin = ({ classes }) => {
 
   const handleSave = async event => {
     event.preventDefault();
-    const idToken = window.gapi.auth2
-      .getAuthInstance()
-      .currentUser.get()
-      .getAuthResponse().id_token;
-    const graphqlClient = new GraphQLClient('http://localhost:4000/graphql', {
-      headers: { authorization: idToken },
-    });
-    const imageUrl = await uploadImage();
-    const { latitude, longitude } = state.draftPin;
-    const args = { title, image: imageUrl, content, latitude, longitude };
-    const { createPin } = await graphqlClient.request(createPinMutation, args);
-    console.log('>> pin created:', { createPin });
-    handleDiscard();
+
+    try {
+      setIsSaving(true);
+      const idToken = window.gapi.auth2
+        .getAuthInstance()
+        .currentUser.get()
+        .getAuthResponse().id_token;
+      const graphqlClient = new GraphQLClient('http://localhost:4000/graphql', {
+        headers: { authorization: idToken },
+      });
+      const imageUrl = await uploadImage();
+      const { latitude, longitude } = state.draftPin;
+      const args = { title, image: imageUrl, content, latitude, longitude };
+      const { createPin } = await graphqlClient.request(createPinMutation, args);
+      console.log('>> pin created:', { createPin });
+      handleDiscard(); // delete draft pin
+    } catch (error) {
+      console.error('ERROR! Failed to create pin', error);
+      setIsSaving(false);
+    }
   };
 
   const handleDiscard = () => {
@@ -113,7 +121,7 @@ const CreatePin = ({ classes }) => {
           className={classes.button}
           variant="contained"
           color="secondary"
-          disabled={!title.trim() || !content.trim() || !image}
+          disabled={!title.trim() || !content.trim() || !image || isSaving}
           onClick={handleSave}
         >
           Save
