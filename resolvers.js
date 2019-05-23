@@ -18,14 +18,13 @@ const resolvers = {
   },
   Mutation: {
     createPin: authenticated(async (root, args, context, info) => {
-      console.log('>> createPin args:', args);
-      return {
-        title: 'Grant Park',
-        image: 'http://res.cloudinary.com/randie/image/upload/v1558571889/gjqkfd0idlpbkj8gqtu6.jpg',
-        content: 'Meow',
-        latitude: 45.539,
-        longitude: -122.629,
-      };
+      const newPin = await new Pin({
+        ...args.input,
+        author: context.currentUser._id,
+      }).save();
+
+      const createdPin = await Pin.populate(newPin, 'author');
+      return createdPin;
     }),
   },
 };
