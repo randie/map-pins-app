@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react';
+import axios from 'axios';
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
@@ -9,22 +10,36 @@ import ClearIcon from '@material-ui/icons/Clear';
 import SaveIcon from '@material-ui/icons/SaveTwoTone';
 import Context from '../../context';
 
+// ref: https://cloudinary.com/documentation/upload_images#uploading_with_a_direct_call_to_the_api
+const CLOUDINARY_API = 'https://api.cloudinary.com/v1_1/randie/image/upload';
+
 const CreatePin = ({ classes }) => {
   const { dispatch } = useContext(Context);
   const [title, setTitle] = useState('');
   const [image, setImage] = useState('');
   const [content, setContent] = useState('');
 
+  const uploadImage = async () => {
+    // upload image to cloudinary.com and return an image url
+    const formData = new FormData();
+    formData.append('file', image);
+    formData.append('upload_preset', 'rb-map-pins');
+    formData.append('cloud_name', 'randie');
+    const response = await axios.post(CLOUDINARY_API, formData);
+    return response.data.url;
+  };
+
+  const handleSave = async event => {
+    event.preventDefault();
+    const imageUrl = await uploadImage();
+    console.log({ title, image, imageUrl, content });
+  };
+
   const handleDiscard = () => {
     setTitle('');
     setImage('');
     setContent('');
     dispatch({ type: 'DISCARD_DRAFT_PIN' });
-  };
-
-  const handleSave = event => {
-    event.preventDefault();
-    console.log(title, image, content);
   };
 
   return (
