@@ -15,7 +15,13 @@ const user = (root, args, context, info) => {
 const resolvers = {
   Query: {
     me: authenticated(user),
+    pins: async (root, args, context, info) => {
+      return await Pin.find({})
+        .populate('author')
+        .populate('comments.author');
+    },
   },
+
   Mutation: {
     createPin: authenticated(async (root, args, context, info) => {
       const newPin = await new Pin({

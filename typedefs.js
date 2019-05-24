@@ -36,6 +36,7 @@ const typeDefs = gql`
 
   type Query {
     me: User
+    pins: [Pin!]
   }
 
   type Mutation {

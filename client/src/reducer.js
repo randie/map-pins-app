@@ -34,6 +34,11 @@ export default (state, { type, payload }) => {
         ...state,
         draftPin: null,
       };
+    case 'GET_PINS':
+      return {
+        ...state,
+        pins: payload,
+      };
     default:
       return state;
   }

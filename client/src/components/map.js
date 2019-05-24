@@ -7,7 +7,10 @@ import { withStyles } from '@material-ui/core/styles';
 import Context from '../context';
 import PinIcon from './pin-icon';
 import Blog from './blog';
+import { useGraphQLClient } from '../hooks/graphql-client';
+import { pinsQuery } from '../graphql/queries';
 
+// mapbox API access token
 const accessToken =
   'pk.eyJ1IjoicmFuZGllIiwiYSI6ImNqdnJ1M29nbDJ5NGw0YW11YTg5cmkyZ24ifQ.T-CIaru7GAEfY6iSTwdRGg';
 
@@ -18,11 +21,15 @@ const initialViewport = {
 };
 
 const Map = ({ classes }) => {
+  const graphqlClient = useGraphQLClient();
   const { state, dispatch } = useContext(Context);
   const [viewport, setViewport] = useState(initialViewport);
   const [currentPosition, setCurrentPosition] = useState(null); // user's current position
 
   useEffect(() => getCurrentPosition(), []);
+  useEffect(() => {
+    getPins();
+  }, []);
 
   const getCurrentPosition = () => {
     if ('geolocation' in navigator) {
@@ -32,6 +39,11 @@ const Map = ({ classes }) => {
         setCurrentPosition({ latitude, longitude });
       });
     }
+  };
+
+  const getPins = async () => {
+    const { pins } = await graphqlClient.request(pinsQuery);
+    dispatch({ type: 'GET_PINS', payload: pins });
   };
 
   const handleClick = ({ lngLat, leftButton }) => {
@@ -67,6 +79,17 @@ const Map = ({ classes }) => {
             <PinIcon size={40} color="red" />
           </Marker>
         )}
+        {state.pins.map(pin => (
+          <Marker
+            key={pin._id}
+            latitude={pin.latitude}
+            longitude={pin.longitude}
+            offsetLeft={-19}
+            offsetTop={-37}
+          >
+            <PinIcon size={40} color="blueviolet" />
+          </Marker>
+        ))}
         {state.draftPin && (
           <Marker
             latitude={state.draftPin.latitude}
@@ -74,7 +97,7 @@ const Map = ({ classes }) => {
             offsetLeft={-19}
             offsetTop={-37}
           >
-            <PinIcon size={40} color="hotpink" />
+            <PinIcon size={40} color="fuchsia" />
           </Marker>
         )}
       </ReactMapGL>
