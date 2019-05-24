@@ -1,5 +1,4 @@
 import React, { useContext, useState } from 'react';
-import { GraphQLClient } from 'graphql-request';
 import axios from 'axios';
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
@@ -11,11 +10,13 @@ import ClearIcon from '@material-ui/icons/Clear';
 import SaveIcon from '@material-ui/icons/SaveTwoTone';
 import Context from '../../context';
 import { createPinMutation } from '../../graphql/mutations';
+import { useGraphQLClient } from '../../hooks/graphql-client';
 
 // ref: https://cloudinary.com/documentation/upload_images#uploading_with_a_direct_call_to_the_api
 const CLOUDINARY_API = 'https://api.cloudinary.com/v1_1/randie/image/upload';
 
 const CreatePin = ({ classes }) => {
+  const graphqlClient = useGraphQLClient();
   const { state, dispatch } = useContext(Context);
   const [title, setTitle] = useState('');
   const [image, setImage] = useState('');
@@ -37,13 +38,6 @@ const CreatePin = ({ classes }) => {
 
     try {
       setIsSaving(true);
-      const idToken = window.gapi.auth2
-        .getAuthInstance()
-        .currentUser.get()
-        .getAuthResponse().id_token;
-      const graphqlClient = new GraphQLClient('http://localhost:4000/graphql', {
-        headers: { authorization: idToken },
-      });
       const imageUrl = await uploadImage();
       const { latitude, longitude } = state.draftPin;
       const args = { title, image: imageUrl, content, latitude, longitude };

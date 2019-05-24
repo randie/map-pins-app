@@ -3,11 +3,10 @@ import { GoogleLogin } from 'react-google-login';
 import { GraphQLClient } from 'graphql-request';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
+import { GRAPHQL_ENDPOINT } from '../../hooks/graphql-client';
 
 import Context from '../../context';
 import { meQuery } from '../../graphql/queries';
-
-const graphqlEndpoint = 'http://localhost:4000/graphql';
 
 const Login = ({ classes }) => {
   const { dispatch } = useContext(Context);
@@ -17,7 +16,7 @@ const Login = ({ classes }) => {
       const options = {
         headers: { authorization: googleUser.getAuthResponse().id_token },
       };
-      const graphqlClient = new GraphQLClient(graphqlEndpoint, options);
+      const graphqlClient = new GraphQLClient(GRAPHQL_ENDPOINT, options);
       const { me } = await graphqlClient.request(meQuery);
       dispatch({ type: 'LOGIN', payload: me });
       dispatch({ type: 'SET_IS_LOGGED_IN', payload: googleUser.isSignedIn() });
