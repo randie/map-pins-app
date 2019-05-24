@@ -28,6 +28,7 @@ export default (state, { type, payload }) => {
       return {
         ...state,
         draftPin: payload,
+        selectedPin: null,
       };
     case 'DISCARD_DRAFT_PIN':
       return {
@@ -45,6 +46,12 @@ export default (state, { type, payload }) => {
       return {
         ...state,
         pins: [...pins, newPin],
+      };
+    case 'SET_SELECTED_PIN':
+      return {
+        ...state,
+        selectedPin: payload,
+        draftPin: null,
       };
     default:
       return state;

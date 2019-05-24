@@ -3,8 +3,9 @@ import { createContext } from 'react';
 const Context = createContext({
   currentUser: null,
   isLoggedIn: false,
-  draftPin: null,
   pins: [],
+  selectedPin: null,
+  draftPin: null,
 });
 
 export default Context;
