@@ -39,6 +39,13 @@ export default (state, { type, payload }) => {
         ...state,
         pins: payload,
       };
+    case 'CREATE_PIN':
+      const newPin = payload;
+      const pins = state.pins.filter(pin => pin._id !== newPin._id);
+      return {
+        ...state,
+        pins: [...pins, newPin],
+      };
     default:
       return state;
   }
