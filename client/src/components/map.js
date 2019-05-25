@@ -2,9 +2,9 @@ import React, { useContext, useEffect, useState } from 'react';
 import ReactMapGL, { NavigationControl, Marker, Popup } from 'react-map-gl';
 import { withStyles } from '@material-ui/core/styles';
 import differenceInMinutes from 'date-fns/difference_in_minutes';
-// import Button from "@material-ui/core/Button";
 import Typography from '@material-ui/core/Typography';
-// import DeleteIcon from "@material-ui/icons/DeleteTwoTone";
+import Button from '@material-ui/core/Button';
+import DeleteIcon from '@material-ui/icons/DeleteTwoTone';
 import Context from '../context';
 import PinIcon from './pin-icon';
 import Blog from './blog';
@@ -69,6 +69,8 @@ const Map = ({ classes }) => {
     return isNewPin ? 'dodgerblue' : 'blueviolet';
   };
 
+  const isPinOwner = () => state.currentUser._id === popup.author._id;
+
   return (
     <div className={classes.root}>
       <ReactMapGL
@@ -117,6 +119,11 @@ const Map = ({ classes }) => {
               <Typography>
                 {popup.latitude.toFixed(6)}, {popup.longitude.toFixed(6)}
               </Typography>
+              {isPinOwner && (
+                <Button className={classes.deleteButton}>
+                  <DeleteIcon /> Delete Pin
+                </Button>
+              )}
             </div>
           </Popup>
         )}
@@ -150,8 +157,8 @@ const styles = {
     left: 0,
     margin: '1em',
   },
-  deleteIcon: {
-    color: 'red',
+  deleteButton: {
+    color: 'gray',
   },
   popupImage: {
     padding: '0.4em',
