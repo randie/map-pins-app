@@ -47,6 +47,14 @@ export default (state, { type, payload }) => {
         ...state,
         pins: [...pins, newPin],
       };
+    case 'DELETE_PIN':
+      const deletedPin = payload;
+      const remainingPins = state.pins.filter(pin => pin._id !== deletedPin._id);
+      return {
+        ...state,
+        pins: remainingPins,
+        selectedPin: null,
+      };
     case 'SET_SELECTED_PIN':
       return {
         ...state,

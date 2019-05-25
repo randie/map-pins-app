@@ -29,3 +29,11 @@ export const createPinMutation = `
     }
   }
 `;
+
+export const deletePinMutation = `
+  mutation($pinId: ID!) {
+    deletePin(pinId: $pinId) {
+      _id
+    }
+  }
+`;

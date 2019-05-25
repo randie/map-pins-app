@@ -32,6 +32,10 @@ const resolvers = {
       const createdPin = await Pin.populate(newPin, 'author');
       return createdPin;
     }),
+    deletePin: authenticated(async (root, args, context, info) => {
+      const deletedPin = await Pin.findOneAndDelete({ _id: args.pinId }).exec();
+      return deletedPin;
+    }),
   },
 };
 

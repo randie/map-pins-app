@@ -3,13 +3,14 @@ import ReactMapGL, { NavigationControl, Marker, Popup } from 'react-map-gl';
 import { withStyles } from '@material-ui/core/styles';
 import differenceInMinutes from 'date-fns/difference_in_minutes';
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/DeleteTwoTone';
 import Context from '../context';
 import PinIcon from './pin-icon';
 import Blog from './blog';
 import { useGraphQLClient } from '../hooks/graphql-client';
 import { pinsQuery } from '../graphql/queries';
+import { deletePinMutation } from '../graphql/mutations';
 
 // mapbox API access token
 const accessToken =
@@ -62,6 +63,13 @@ const Map = ({ classes }) => {
   const handlePinClick = pin => {
     setPopup(pin);
     dispatch({ type: 'SET_SELECTED_PIN', payload: pin });
+  };
+
+  const handleDeletePinButtonClick = async pin => {
+    const args = { pinId: pin._id };
+    const { deletePin } = await graphqlClient.request(deletePinMutation, args);
+    dispatch({ type: 'DELETE_PIN', payload: deletePin });
+    setPopup(null);
   };
 
   const highlightNewPin = pin => {
@@ -120,9 +128,9 @@ const Map = ({ classes }) => {
                 {popup.latitude.toFixed(6)}, {popup.longitude.toFixed(6)}
               </Typography>
               {isPinOwner && (
-                <Button className={classes.deleteButton}>
-                  <DeleteIcon /> Delete Pin
-                </Button>
+                <IconButton onClick={() => handleDeletePinButtonClick(popup)}>
+                  <DeleteIcon />
+                </IconButton>
               )}
             </div>
           </Popup>
@@ -156,9 +164,6 @@ const styles = {
     top: 0,
     left: 0,
     margin: '1em',
-  },
-  deleteButton: {
-    color: 'gray',
   },
   popupImage: {
     padding: '0.4em',
