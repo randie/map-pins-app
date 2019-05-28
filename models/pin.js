@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 
+//createdAt: String,
 const PinSchema = new mongoose.Schema(
   {
-    createdAt: String,
     title: String,
     content: String,
     image: String,

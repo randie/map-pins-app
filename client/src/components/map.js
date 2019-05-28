@@ -73,7 +73,7 @@ const Map = ({ classes }) => {
   };
 
   const highlightNewPin = pin => {
-    const isNewPin = differenceInMinutes(Date.now(), new Date(pin.createdAt).getTime()) <= 30;
+    const isNewPin = differenceInMinutes(Date.now(), Number(pin.createdAt)) <= 30;
     return isNewPin ? 'dodgerblue' : 'blueviolet';
   };
 
