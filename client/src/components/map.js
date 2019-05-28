@@ -119,7 +119,7 @@ const Map = ({ classes }) => {
             anchor="top"
             latitude={popup.latitude}
             longitude={popup.longitude}
-            closeOnclick={false}
+            closeOnClick={false}
             onClose={() => setPopup(null)}
           >
             <img className={classes.popupImage} src={popup.image} alt={popup.title} />
@@ -127,7 +127,7 @@ const Map = ({ classes }) => {
               <Typography>
                 {popup.latitude.toFixed(6)}, {popup.longitude.toFixed(6)}
               </Typography>
-              {isPinOwner && (
+              {isPinOwner() && (
                 <IconButton onClick={() => handleDeletePinButtonClick(popup)}>
                   <DeleteIcon />
                 </IconButton>
