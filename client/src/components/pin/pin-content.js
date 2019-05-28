@@ -4,6 +4,7 @@ import Typography from '@material-ui/core/Typography';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import FaceIcon from '@material-ui/icons/Face';
 import Context from '../../context';
+import CreateComment from '../comment/create-comment';
 
 const PinContent = ({ classes }) => {
   const { title, content, author, createdAt, comments } = useContext(Context).state.selectedPin;
@@ -21,6 +22,7 @@ const PinContent = ({ classes }) => {
       <Typography variant="subtitle1" gutterBottom>
         {content}
       </Typography>
+      <CreateComment />
     </div>
   );
 };
