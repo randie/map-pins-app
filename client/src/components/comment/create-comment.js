@@ -27,6 +27,7 @@ const CreateComment = ({ classes }) => {
         <InputBase
           className={classes.input}
           placeholder="Add comment"
+          multiline={true}
           value={comment}
           onChange={event => setComment(event.target.value)}
         />
