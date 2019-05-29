@@ -5,11 +5,11 @@ import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import FaceIcon from '@material-ui/icons/Face';
 import Context from '../../context';
 import CreateComment from '../comment/create-comment';
+import Comments from '../comment/comments';
 
 const PinContent = ({ classes }) => {
   const { title, content, author, createdAt, comments } = useContext(Context).state.selectedPin;
-  console.log('comments:', comments);
-  debugger;
+
   return (
     <div className={classes.root}>
       <Typography component="h2" variant="h4" color="primary" gutterBottom>
@@ -25,6 +25,7 @@ const PinContent = ({ classes }) => {
         {content}
       </Typography>
       <CreateComment />
+      <Comments comments={comments} />
     </div>
   );
 };
