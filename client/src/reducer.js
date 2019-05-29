@@ -40,14 +40,15 @@ export default (state, { type, payload }) => {
         ...state,
         pins: payload,
       };
-    case 'CREATE_PIN':
+    case 'CREATE_PIN': {
       const newPin = payload;
       const pins = state.pins.filter(pin => pin._id !== newPin._id);
       return {
         ...state,
         pins: [...pins, newPin],
       };
-    case 'DELETE_PIN':
+    }
+    case 'DELETE_PIN': {
       const deletedPin = payload;
       const remainingPins = state.pins.filter(pin => pin._id !== deletedPin._id);
       return {
@@ -55,12 +56,24 @@ export default (state, { type, payload }) => {
         pins: remainingPins,
         selectedPin: null,
       };
+    }
     case 'SET_SELECTED_PIN':
       return {
         ...state,
         selectedPin: payload,
         draftPin: null,
       };
+    case 'CREATE_COMMENT': {
+      const pinWithNewComment = payload;
+      const pins = state.pins.map(pin =>
+        pin._id === pinWithNewComment._id ? pinWithNewComment : pin,
+      );
+      return {
+        ...state,
+        pins,
+        selectedPin: pinWithNewComment,
+      };
+    }
     default:
       return state;
   }

@@ -42,7 +42,6 @@ const CreatePin = ({ classes }) => {
       const { latitude, longitude } = state.draftPin;
       const args = { title, image: imageUrl, content, latitude, longitude };
       const { createPin } = await graphqlClient.request(createPinMutation, args);
-      console.log('>> pin created:', { createPin });
       dispatch({ type: 'CREATE_PIN', payload: createPin });
       handleDiscard(); // delete draft pin
     } catch (error) {

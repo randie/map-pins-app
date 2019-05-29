@@ -8,6 +8,8 @@ import CreateComment from '../comment/create-comment';
 
 const PinContent = ({ classes }) => {
   const { title, content, author, createdAt, comments } = useContext(Context).state.selectedPin;
+  console.log('comments:', comments);
+  debugger;
   return (
     <div className={classes.root}>
       <Typography component="h2" variant="h4" color="primary" gutterBottom>
