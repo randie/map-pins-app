@@ -36,6 +36,17 @@ const resolvers = {
       const deletedPin = await Pin.findOneAndDelete({ _id: args.pinId }).exec();
       return deletedPin;
     }),
+    createComment: authenticated(async (root, args, context, info) => {
+      const newComment = { text: args.text, author: context.currentUser._id };
+      const updatedPin = await Pin.findOneAndUpdate(
+        { _id: args.pinId },
+        { $push: { comments: newComment } },
+        { new: true },
+      )
+        .populate('author')
+        .populate('comments.author');
+      return updatedPin;
+    }),
   },
 };
 
