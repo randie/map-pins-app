@@ -25,7 +25,10 @@ const Login = ({ classes }) => {
     }
   };
 
-  const handleFailure = error => console.error('ERROR! Login failed', error);
+  const handleFailure = error => {
+    console.error('ERROR! Login failed', error);
+    dispatch({ type: 'SET_IS_LOGGED_IN', payload: false });
+  };
 
   return (
     <div className={classes.root}>
