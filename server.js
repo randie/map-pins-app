@@ -22,16 +22,12 @@ const server = new ApolloServer({
     try {
       if (Boolean(req)) {
         const authToken = req.headers.authorization || '';
-        if (!authToken) {
-          throw new Error('No auth token');
-        } else {
-          const currentUser = await findOrCreateUser(authToken);
-          return { currentUser };
-        }
+        if (!authToken) return {};
+        const currentUser = await findOrCreateUser(authToken);
+        return { currentUser };
       }
-      throw new Error('No req or connection for server');
     } catch (error) {
-      console.error('ERROR! Unable to authenticate user');
+      console.error('ERROR! Unable to authenticate user:', error.message);
     }
   },
 });
