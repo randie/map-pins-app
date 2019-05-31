@@ -41,9 +41,8 @@ const CreatePin = ({ classes }) => {
       const imageUrl = await uploadImage();
       const { latitude, longitude } = state.draftPin;
       const args = { title, image: imageUrl, content, latitude, longitude };
-      const { createPin } = await graphqlClient.request(createPinMutation, args);
-      dispatch({ type: 'CREATE_PIN', payload: createPin });
-      handleDiscard(); // delete draft pin
+      await graphqlClient.request(createPinMutation, args);
+      handleDiscard(); // don't need draft pin anymore, so delete it
     } catch (error) {
       console.error('ERROR! Failed to create pin', error);
       setIsSaving(false);

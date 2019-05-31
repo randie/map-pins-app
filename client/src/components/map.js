@@ -12,6 +12,9 @@ import { useGraphQLClient } from '../hooks/graphql-client';
 import { pinsQuery } from '../graphql/queries';
 import { deletePinMutation } from '../graphql/mutations';
 
+import { Subscription } from 'react-apollo';
+import { pinCreatedSubscription } from '../graphql/subscriptions';
+
 // mapbox API access token
 const accessToken =
   'pk.eyJ1IjoicmFuZGllIiwiYSI6ImNqdnJ1M29nbDJ5NGw0YW11YTg5cmkyZ24ifQ.T-CIaru7GAEfY6iSTwdRGg';
@@ -79,6 +82,22 @@ const Map = ({ classes }) => {
 
   const isPinOwner = () => state.currentUser._id === popup.author._id;
 
+  const renderPin = ({ data, loading }) => {
+    if (loading) return <h1>Loading</h1>;
+    const pin = data.pinCreated;
+    return (
+      <Marker
+        key={pin._id}
+        latitude={pin.latitude}
+        longitude={pin.longitude}
+        offsetLeft={-19}
+        offsetTop={-37}
+      >
+        <PinIcon size={40} color={highlightNewPin(pin)} onClick={() => handlePinClick(pin)} />
+      </Marker>
+    );
+  };
+
   return (
     <div className={classes.root}>
       <ReactMapGL
@@ -103,6 +122,14 @@ const Map = ({ classes }) => {
             <PinIcon size={40} color="red" />
           </Marker>
         )}
+        <Subscription
+          subscription={pinCreatedSubscription}
+          onSubscriptionData={({ subscriptionData }) => {
+            console.log('>> Subscription Component in maps.js line 164', subscriptionData.data);
+          }}
+        >
+          {renderPin}
+        </Subscription>
         {state.pins.map(pin => (
           <Marker
             key={pin._id}

@@ -44,6 +44,10 @@ const typeDefs = gql`
     deletePin(pinId: ID!): Pin
     createComment(pinId: ID!, text: String!): Pin
   }
+
+  type Subscription {
+    pinCreated: Pin
+  }
 `;
 
 export default typeDefs;
