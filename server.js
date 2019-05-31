@@ -16,24 +16,22 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   context: async ({ req, connection }) => {
-    let authToken;
-    let currentUser;
+    if (Boolean(connection)) {
+      return connection.context;
+    }
     try {
-      if (Boolean(connection)) {
-        return connection.context;
-      } else if (Boolean(req)) {
-        authToken = req.headers.authorization || '';
-        if (Boolean(authToken)) {
+      if (Boolean(req)) {
+        const authToken = req.headers.authorization || '';
+        if (!authToken) {
+          throw new Error('No auth token');
+        } else {
           const currentUser = await findOrCreateUser(authToken);
           return { currentUser };
-        } else {
-          throw new Error('No auth token');
         }
-      } else {
-        throw new Error('No req or connection for server');
       }
+      throw new Error('No req or connection for server');
     } catch (error) {
-      console.error(`ERROR! Unable to authenticate user with token "${authToken}"`);
+      console.error('ERROR! Unable to authenticate user');
     }
   },
 });
