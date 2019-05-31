@@ -15,15 +15,19 @@ mongoose
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: async ({ req }) => {
-    const authToken = req.headers.authorization;
+  context: async ({ req, connection }) => {
+    if (Boolean(connection)) {
+      return connection.context;
+    }
     try {
-      if (Boolean(authToken)) {
+      if (Boolean(req)) {
+        const authToken = req.headers.authorization || '';
+        if (!authToken) return {};
         const currentUser = await findOrCreateUser(authToken);
         return { currentUser };
       }
     } catch (error) {
-      console.error(`ERROR! Unable to authenticate user with token ${authToken}`);
+      console.error('ERROR! Unable to authenticate user:', error.message);
     }
   },
 });

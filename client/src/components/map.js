@@ -12,10 +12,14 @@ import { useGraphQLClient } from '../hooks/graphql-client';
 import { pinsQuery } from '../graphql/queries';
 import { deletePinMutation } from '../graphql/mutations';
 
+import { Subscription } from 'react-apollo';
+import { pinCreatedSubscription } from '../graphql/subscriptions';
+
 // mapbox API access token
 const accessToken =
   'pk.eyJ1IjoicmFuZGllIiwiYSI6ImNqdnJ1M29nbDJ5NGw0YW11YTg5cmkyZ24ifQ.T-CIaru7GAEfY6iSTwdRGg';
 
+// Boulder, CO
 const initialViewport = {
   latitude: 40.014984,
   longitude: -105.270546,
@@ -79,6 +83,45 @@ const Map = ({ classes }) => {
 
   const isPinOwner = () => state.currentUser._id === popup.author._id;
 
+  const renderPin = pin => (
+    <Marker
+      key={pin._id}
+      latitude={pin.latitude}
+      longitude={pin.longitude}
+      offsetLeft={-19}
+      offsetTop={-37}
+    >
+      <PinIcon size={40} color={highlightNewPin(pin)} onClick={() => handlePinClick(pin)} />
+    </Marker>
+  );
+
+  const renderPinCreated = ({ data, loading }) => {
+    if (loading) return null;
+    return renderPin(data.pinCreated);
+  };
+
+  const renderPopup = () => (
+    <Popup
+      anchor="top"
+      latitude={popup.latitude}
+      longitude={popup.longitude}
+      closeOnClick={false}
+      onClose={() => setPopup(null)}
+    >
+      <img className={classes.popupImage} src={popup.image} alt={popup.title} />
+      <div className={classes.popupTab}>
+        <Typography>
+          {popup.latitude.toFixed(6)}, {popup.longitude.toFixed(6)}
+        </Typography>
+        {isPinOwner() && (
+          <IconButton onClick={() => handleDeletePinButtonClick(popup)}>
+            <DeleteIcon />
+          </IconButton>
+        )}
+      </div>
+    </Popup>
+  );
+
   return (
     <div className={classes.root}>
       <ReactMapGL
@@ -103,38 +146,6 @@ const Map = ({ classes }) => {
             <PinIcon size={40} color="red" />
           </Marker>
         )}
-        {state.pins.map(pin => (
-          <Marker
-            key={pin._id}
-            latitude={pin.latitude}
-            longitude={pin.longitude}
-            offsetLeft={-19}
-            offsetTop={-37}
-          >
-            <PinIcon size={40} color={highlightNewPin(pin)} onClick={() => handlePinClick(pin)} />
-          </Marker>
-        ))}
-        {popup && (
-          <Popup
-            anchor="top"
-            latitude={popup.latitude}
-            longitude={popup.longitude}
-            closeOnClick={false}
-            onClose={() => setPopup(null)}
-          >
-            <img className={classes.popupImage} src={popup.image} alt={popup.title} />
-            <div className={classes.popupTab}>
-              <Typography>
-                {popup.latitude.toFixed(6)}, {popup.longitude.toFixed(6)}
-              </Typography>
-              {isPinOwner() && (
-                <IconButton onClick={() => handleDeletePinButtonClick(popup)}>
-                  <DeleteIcon />
-                </IconButton>
-              )}
-            </div>
-          </Popup>
-        )}
         {state.draftPin && (
           <Marker
             latitude={state.draftPin.latitude}
@@ -145,6 +156,9 @@ const Map = ({ classes }) => {
             <PinIcon size={40} color="fuchsia" />
           </Marker>
         )}
+        <Subscription subscription={pinCreatedSubscription}>{renderPinCreated}</Subscription>
+        {state.pins.map(pin => renderPin(pin))}
+        {popup && renderPopup()}
       </ReactMapGL>
       <Blog />
     </div>

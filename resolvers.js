@@ -1,5 +1,10 @@
-import { AuthenticationError } from 'apollo-server';
+import { AuthenticationError, PubSub } from 'apollo-server';
 import Pin from './models/pin';
+
+const pubsub = new PubSub();
+
+// subscription channels
+const PIN_CREATED_CHANNEL = 'PIN_CREATED';
 
 const authenticated = next => (root, args, context, info) => {
   if (!context.currentUser) {
@@ -29,8 +34,10 @@ const resolvers = {
         author: context.currentUser._id,
       }).save();
 
-      const createdPin = await Pin.populate(newPin, 'author');
-      return createdPin;
+      const pinCreated = await Pin.populate(newPin, 'author');
+      pubsub.publish(PIN_CREATED_CHANNEL, { pinCreated });
+
+      return pinCreated;
     }),
     deletePin: authenticated(async (root, args, context, info) => {
       const deletedPin = await Pin.findOneAndDelete({ _id: args.pinId }).exec();
@@ -47,6 +54,12 @@ const resolvers = {
         .populate('comments.author');
       return updatedPin;
     }),
+  },
+
+  Subscription: {
+    pinCreated: {
+      subscribe: () => pubsub.asyncIterator(PIN_CREATED_CHANNEL),
+    },
   },
 };
 
