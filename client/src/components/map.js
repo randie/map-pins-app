@@ -83,7 +83,7 @@ const Map = ({ classes }) => {
   const isPinOwner = () => state.currentUser._id === popup.author._id;
 
   const renderPin = ({ data, loading }) => {
-    if (loading) return <h1>Loading</h1>;
+    if (loading) return null;
     const pin = data.pinCreated;
     return (
       <Marker
