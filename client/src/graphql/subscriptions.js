@@ -27,3 +27,11 @@ export const pinCreatedSubscription = gql`
     }
   }
 `;
+
+export const pinDeletedSubscription = gql`
+  subscription {
+    pinDeleted {
+      _id
+    }
+  }
+`;
