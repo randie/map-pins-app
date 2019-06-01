@@ -68,10 +68,18 @@ export default (state, { type, payload }) => {
       const pins = state.pins.map(pin =>
         pin._id === pinWithNewComment._id ? pinWithNewComment : pin,
       );
+
+      // Make it so if a comment is added to a pin that isn't your currently
+      // selected pin, your selected pin doesn't change from under you just
+      // because you are subscribed to comment changes. You will see the newly
+      // added comment when you select the pin that it was added to.
+      const selectedPin =
+        state.selectedPin._id !== pinWithNewComment._id ? state.selectedPin : pinWithNewComment;
+
       return {
         ...state,
         pins,
-        selectedPin: pinWithNewComment,
+        selectedPin,
       };
     }
     default:

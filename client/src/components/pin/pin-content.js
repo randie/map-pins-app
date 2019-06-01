@@ -7,8 +7,16 @@ import Context from '../../context';
 import CreateComment from '../comment/create-comment';
 import Comments from '../comment/comments';
 
+import { Subscription } from 'react-apollo';
+import { commentCreatedSubscription } from '../../graphql/subscriptions';
+
 const PinContent = ({ classes }) => {
-  const { title, content, author, createdAt, comments } = useContext(Context).state.selectedPin;
+  const { state, dispatch } = useContext(Context);
+  const { title, content, author, createdAt, comments } = state.selectedPin;
+
+  const handleCommentCreated = ({ subscriptionData }) => {
+    dispatch({ type: 'CREATE_COMMENT', payload: subscriptionData.data.commentCreated });
+  };
 
   return (
     <div className={classes.root}>
@@ -26,6 +34,12 @@ const PinContent = ({ classes }) => {
       </Typography>
       <CreateComment />
       <Comments comments={comments} />
+      <Subscription
+        subscription={commentCreatedSubscription}
+        onSubscriptionData={handleCommentCreated}
+      >
+        {null}
+      </Subscription>
     </div>
   );
 };
