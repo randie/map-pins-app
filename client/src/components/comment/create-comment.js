@@ -11,7 +11,7 @@ import { createCommentMutation } from '../../graphql/mutations';
 
 const CreateComment = ({ classes }) => {
   const graphqlClient = useGraphQLClient();
-  const { state, dispatch } = useContext(Context);
+  const { state } = useContext(Context);
   const [comment, setComment] = useState('');
 
   const handleCommentSubmit = async () => {
