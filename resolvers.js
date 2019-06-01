@@ -6,6 +6,7 @@ const pubsub = new PubSub();
 // subscription channels
 const PIN_CREATED_CHANNEL = 'PIN_CREATED';
 const PIN_DELETED_CHANNEL = 'PIN_DELETED';
+const COMMENT_CREATED_CHANNEL = 'COMMENT_CREATED';
 
 const authenticated = next => (root, args, context, info) => {
   if (!context.currentUser) {
@@ -48,14 +49,16 @@ const resolvers = {
     }),
     createComment: authenticated(async (root, args, context, info) => {
       const newComment = { text: args.text, author: context.currentUser._id };
-      const updatedPin = await Pin.findOneAndUpdate(
+      const pinWithNewComment = await Pin.findOneAndUpdate(
         { _id: args.pinId },
         { $push: { comments: newComment } },
         { new: true },
       )
         .populate('author')
         .populate('comments.author');
-      return updatedPin;
+      pubsub.publish(COMMENT_CREATED_CHANNEL, { commentCreated: pinWithNewComment });
+
+      return pinWithNewComment;
     }),
   },
 
@@ -65,6 +68,9 @@ const resolvers = {
     },
     pinDeleted: {
       subscribe: () => pubsub.asyncIterator(PIN_DELETED_CHANNEL),
+    },
+    commentCreated: {
+      subscribe: () => pubsub.asyncIterator(COMMENT_CREATED_CHANNEL),
     },
   },
 };

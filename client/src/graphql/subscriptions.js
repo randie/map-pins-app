@@ -35,3 +35,31 @@ export const pinDeletedSubscription = gql`
     }
   }
 `;
+
+export const commentCreatedSubscription = gql`
+  subscription {
+    commentCreated {
+      _id
+      createdAt
+      title
+      image
+      content
+      latitude
+      longitude
+      author {
+        _id
+        name
+        email
+        picture
+      }
+      comments {
+        text
+        createdAt
+        author {
+          name
+          picture
+        }
+      }
+    }
+  }
+`;

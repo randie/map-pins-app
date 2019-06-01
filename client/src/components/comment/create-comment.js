@@ -16,8 +16,7 @@ const CreateComment = ({ classes }) => {
 
   const handleCommentSubmit = async () => {
     const args = { pinId: state.selectedPin._id, text: comment };
-    const { createComment } = await graphqlClient.request(createCommentMutation, args);
-    dispatch({ type: 'CREATE_COMMENT', payload: createComment });
+    await graphqlClient.request(createCommentMutation, args);
     setComment('');
   };
 
