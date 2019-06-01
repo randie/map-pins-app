@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node --exec babel-node server.js",
-    "dev": "nodemon --exec babel-node --ignore client/ server.js"
+    "dev": "nodemon --exec babel-node --ignore frontend/ server.js"
   },
   "keywords": [],
   "author": "Randie",
