@@ -14,6 +14,7 @@ import { deletePinMutation } from '../graphql/mutations';
 
 import { Subscription } from 'react-apollo';
 import { pinCreatedSubscription } from '../graphql/subscriptions';
+import { pinDeletedSubscription } from '../graphql/subscriptions';
 
 // mapbox API access token
 const accessToken =
@@ -71,8 +72,7 @@ const Map = ({ classes }) => {
 
   const handleDeletePinButtonClick = async pin => {
     const args = { pinId: pin._id };
-    const { deletePin } = await graphqlClient.request(deletePinMutation, args);
-    dispatch({ type: 'DELETE_PIN', payload: deletePin });
+    await graphqlClient.request(deletePinMutation, args);
     setPopup(null);
   };
 
@@ -98,6 +98,10 @@ const Map = ({ classes }) => {
   const renderPinCreated = ({ data, loading }) => {
     if (loading) return null;
     return renderPin(data.pinCreated);
+  };
+
+  const handlePinDeleted = ({ subscriptionData }) => {
+    dispatch({ type: 'DELETE_PIN', payload: subscriptionData.data.pinDeleted });
   };
 
   const renderPopup = () => (
@@ -136,6 +140,7 @@ const Map = ({ classes }) => {
         <div className={classes.navigationControl}>
           <NavigationControl onViewportChange={newViewport => setViewport(newViewport)} />
         </div>
+
         {currentPosition && (
           <Marker
             latitude={currentPosition.latitude}
@@ -146,6 +151,7 @@ const Map = ({ classes }) => {
             <PinIcon size={40} color="red" />
           </Marker>
         )}
+
         {state.draftPin && (
           <Marker
             latitude={state.draftPin.latitude}
@@ -156,7 +162,12 @@ const Map = ({ classes }) => {
             <PinIcon size={40} color="fuchsia" />
           </Marker>
         )}
+
         <Subscription subscription={pinCreatedSubscription}>{renderPinCreated}</Subscription>
+        <Subscription subscription={pinDeletedSubscription} onSubscriptionData={handlePinDeleted}>
+          {null}
+        </Subscription>
+
         {state.pins.map(pin => renderPin(pin))}
         {popup && renderPopup()}
       </ReactMapGL>

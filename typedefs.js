@@ -47,6 +47,7 @@ const typeDefs = gql`
 
   type Subscription {
     pinCreated: Pin
+    pinDeleted: Pin
   }
 `;
 

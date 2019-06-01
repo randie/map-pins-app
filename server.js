@@ -26,6 +26,7 @@ const server = new ApolloServer({
         const currentUser = await findOrCreateUser(authToken);
         return { currentUser };
       }
+      console.error('ERROR! No req or connection');
     } catch (error) {
       console.error('ERROR! Unable to authenticate user:', error.message);
     }
