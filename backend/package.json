@@ -1,15 +1,11 @@
 {
-  "name": "map-pins-app",
-  "version": "1.0.0",
-  "description": "",
+  "name": "map-pins-backend",
+  "version": "0.1.0",
   "main": "server.js",
   "scripts": {
-    "start": "node --exec babel-node server.js",
-    "dev": "nodemon --exec babel-node --ignore client/ server.js"
+    "start": "node server.js",
+    "dev": "nodemon --exec babel-node --ignore frontend/ server.js"
   },
-  "keywords": [],
-  "author": "Randie",
-  "license": "ISC",
   "dependencies": {
     "apollo-server": "^2.3.1",
     "dotenv": "^6.2.0",
