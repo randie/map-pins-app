@@ -10,7 +10,6 @@ const Logout = ({ classes }) => {
 
   const handleLogoutSuccess = () => {
     dispatch({ type: 'LOGOUT' });
-    console.log('>> User has logged out');
   };
 
   return (
