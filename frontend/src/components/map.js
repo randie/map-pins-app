@@ -83,6 +83,14 @@ const Map = ({ classes }) => {
 
   const isPinOwner = () => state.currentUser._id === popup.author._id;
 
+  const handlePinCreated = ({ subscriptionData }) => {
+    dispatch({ type: 'CREATE_PIN', payload: subscriptionData.data.pinCreated });
+  };
+
+  const handlePinDeleted = ({ subscriptionData }) => {
+    dispatch({ type: 'DELETE_PIN', payload: subscriptionData.data.pinDeleted });
+  };
+
   const renderPin = pin => (
     <Marker
       key={pin._id}
@@ -94,15 +102,6 @@ const Map = ({ classes }) => {
       <PinIcon size={40} color={highlightNewPin(pin)} onClick={() => handlePinClick(pin)} />
     </Marker>
   );
-
-  const renderPinCreated = ({ data, loading }) => {
-    if (loading) return null;
-    return renderPin(data.pinCreated);
-  };
-
-  const handlePinDeleted = ({ subscriptionData }) => {
-    dispatch({ type: 'DELETE_PIN', payload: subscriptionData.data.pinDeleted });
-  };
 
   const renderPopup = () => (
     <Popup
@@ -163,13 +162,15 @@ const Map = ({ classes }) => {
           </Marker>
         )}
 
-        <Subscription subscription={pinCreatedSubscription}>{renderPinCreated}</Subscription>
+        {state.pins.map(pin => renderPin(pin))}
+        {popup && renderPopup()}
+
+        <Subscription subscription={pinCreatedSubscription} onSubscriptionData={handlePinCreated}>
+          {null}
+        </Subscription>
         <Subscription subscription={pinDeletedSubscription} onSubscriptionData={handlePinDeleted}>
           {null}
         </Subscription>
-
-        {state.pins.map(pin => renderPin(pin))}
-        {popup && renderPopup()}
       </ReactMapGL>
       <Blog />
     </div>
